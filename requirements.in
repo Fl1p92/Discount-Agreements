@@ -1,0 +1,7 @@
+django<3.0
+django-environ
+django-debug-toolbar
+djangorestframework
+ipython
+pip-tools
+psycopg2

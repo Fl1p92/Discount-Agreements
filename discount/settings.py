@@ -38,6 +38,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'apps.agreement.middleware.BadPeriodMiddleware',
 ]
 
 ENABLE_DEBUG_TOOLBAR = env.bool('FT_ENABLE_DEBUG_TOOLBAR', default=DEBUG)

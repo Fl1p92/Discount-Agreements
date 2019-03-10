@@ -7,6 +7,9 @@ def get_sentinel_user():
     return get_user_model().objects.get_or_create(username='deleted')[0]
 
 
+class BadPeriodError(ValidationError): pass
+
+
 class Agreement(models.Model):
     start_date = models.DateField('Start date')
     stop_date = models.DateField('Stop date')
@@ -60,21 +63,21 @@ class Period(models.Model):
         return f'Period #{self.id} of agreement #{self.agreement.id}'
 
     def save(self, **kwargs):
-        # start_date validation
+        # start_date check
         if self.start_date < self.agreement.start_date:
-            raise ValidationError('Period start date must be later than start date of the agreement')
-        # stop_date validation
+            raise BadPeriodError('Period start date must be later than start date of the agreement')
+        # stop_date check
         if self.stop_date > self.agreement.stop_date:
-            raise ValidationError('Period stop date must be earlier than stop date of the agreement')
+            raise BadPeriodError('Period stop date must be earlier than stop date of the agreement')
 
         # periods intersection check
         periods = self.agreement.periods.exclude(id=self.id)  # exclude prevents raise on update instance
         if periods.filter(start_date__lt=self.start_date, stop_date__gt=self.start_date).exists():
-            raise ValidationError('Period start date should not intersect with existing periods')
+            raise BadPeriodError('Period start date should not intersect with existing periods')
         if periods.filter(start_date__lt=self.stop_date, stop_date__gt=self.stop_date).exists():
-            raise ValidationError('Period stop date should not intersect with existing periods')
+            raise BadPeriodError('Period stop date should not intersect with existing periods')
         if periods.filter(start_date__gt=self.start_date, stop_date__lt=self.stop_date).exists():
-            raise ValidationError('Period should not intersect with existing periods')
+            raise BadPeriodError('Period should not intersect with existing periods')
 
         super().save(**kwargs)
 

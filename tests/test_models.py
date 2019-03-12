@@ -1,14 +1,15 @@
 from datetime import date
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from apps.agreement.models import Agreement, Period, Company, BadPeriodError
+from apps.agreement.models import Agreement, Period, Company
 
 
 class AgreementsModelsTests(TestCase):
 
-    fixtures = ('fixtures.json', )
+    fixtures = ('test_fixtures.json', )
 
     def setUp(self):
         self.agreement = Agreement.objects.create(
@@ -30,7 +31,7 @@ class AgreementsModelsTests(TestCase):
             stop_date=date(2019, 12, 12),
             status='N',
         )
-        with self.assertRaisesMessage(BadPeriodError,
+        with self.assertRaisesMessage(ValidationError,
                                       'Period start date must be later than start date of the agreement'):
             bad_start_date_period.save()
 
@@ -41,7 +42,7 @@ class AgreementsModelsTests(TestCase):
             stop_date=date(2020, 1, 1),
             status='N',
         )
-        with self.assertRaisesMessage(BadPeriodError,
+        with self.assertRaisesMessage(ValidationError,
                                       'Period stop date must be earlier than stop date of the agreement'):
             bad_stop_date_period.save()
 
@@ -64,7 +65,7 @@ class AgreementsModelsTests(TestCase):
             stop_date=date(2019, 10, 10),
             status='N',
         )
-        with self.assertRaisesMessage(BadPeriodError,
+        with self.assertRaisesMessage(ValidationError,
                                       'Period start date should not intersect with existing periods'):
             start_date_intersection_period.save()
 
@@ -75,7 +76,7 @@ class AgreementsModelsTests(TestCase):
             stop_date=date(2019, 6, 6),
             status='N',
         )
-        with self.assertRaisesMessage(BadPeriodError,
+        with self.assertRaisesMessage(ValidationError,
                                       'Period stop date should not intersect with existing periods'):
             stop_date_intersection_period.save()
 
@@ -86,7 +87,7 @@ class AgreementsModelsTests(TestCase):
             stop_date=date(2019, 10, 10),
             status='N',
         )
-        with self.assertRaisesMessage(BadPeriodError,
+        with self.assertRaisesMessage(ValidationError,
                                       'Period should not intersect with existing periods'):
             total_intersection_period.save()
 

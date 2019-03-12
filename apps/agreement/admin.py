@@ -12,7 +12,7 @@ class PeriodLineInline(admin.TabularInline):
 class AgreementAdmin(admin.ModelAdmin):
     inlines = (PeriodLineInline, )
     list_display = ('__str__', 'negotiator', 'start_date', 'stop_date', 'debit', 'credit')
-    list_filter = ('negotiator', 'company')
+    list_filter = ('negotiator', 'company', 'company__country')
     search_fields = ('id', 'negotiator__username', 'company__title', 'start_date', 'stop_date', 'debit', 'credit')
 
 

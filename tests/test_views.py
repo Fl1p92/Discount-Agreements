@@ -129,6 +129,9 @@ class AgreementsViewsTests(APITestCase):
             {'country': '1,2,5,bad', 'company': '2,query,3,4', 'negotiator': '1,param,2'}
         )
         self.assertEqual(
-            response_4.data,
-            OrderedDict({2019: [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0]})
+            response_4.data, {
+                'country': ['Введите число.'],
+                'company': ['Введите число.'],
+                'negotiator': ['Введите число.'],
+            }
         )

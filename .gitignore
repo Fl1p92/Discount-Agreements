@@ -1,0 +1,13 @@
+*.pyc
+__pycache__
+*.swp
+*~
+
+# Pycharm IDE
+.idea/
+
+# Pyenv virtualenv version
+.python-version
+
+# Environment variables
+.env

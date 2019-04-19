@@ -25,10 +25,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'rest_framework',
+    'anymail',
     'django_filters',
+    'rest_framework',
 
     'apps.agreement.apps.AgreementConfig',
+    'apps.notifications.apps.NotificationsConfig',
 ]
 
 MIDDLEWARE = [
@@ -117,3 +119,31 @@ STATIC_URL = '/static/'
 # Debug-toolbar
 
 INTERNAL_IPS = ['127.0.0.1']
+
+# Mailing
+
+MAIL_RECEIVER_LIST = env.list('FT_MAIL_RECEIVER_LIST')
+
+EMAIL_USE_TLS = True
+
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_PORT = 587
+
+EMAIL_HOST_USER = env('FT_EMAIL_HOST_USER')
+
+EMAIL_HOST_PASSWORD = env('FT_EMAIL_HOST_PASSWORD')
+
+DEFAULT_FROM_EMAIL = env('FT_DEFAULT_FROM_EMAIL', default='noreply@mg.discounts.ga')
+
+# REDIS related settings
+
+REDIS_HOST = 'localhost'
+
+REDIS_PORT = '6379'
+
+BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'

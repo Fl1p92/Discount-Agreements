@@ -3,5 +3,6 @@
 {% block title %}Index Title!{% endblock title %}
 
 {% block content %}
-    Link to admin page <a href="{% url 'admin:index' %}" class="badge badge-info">here!</a>
+    <p>Link to admin page <a href="{% url 'admin:index' %}" class="badge badge-info">here!</a></p>
+    <p><a href="{% url 'notifications:send_mail' %}" class="badge badge-info">Send mail!</a></p>
 {% endblock content %}

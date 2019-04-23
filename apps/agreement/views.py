@@ -1,7 +1,7 @@
 from collections import defaultdict, OrderedDict
 
 from django.views.generic import TemplateView
-from django.db.models import Max
+from django.db.models import Max, Count
 from django.db.models.functions import ExtractYear, ExtractMonth
 
 from rest_framework.generics import ListAPIView
@@ -35,18 +35,49 @@ class AgreementsCalendarAPIView(ListAPIView):
     filterset_class = AgreementFilter
 
     def list(self, request, *args, **kwargs):
+        agreements = self.filter_queryset(self.get_queryset())
+
+        # date_dict = self.realization_one(agreements)
+        date_dict = self.realization_two(agreements)
+
+        ordered_date_dict = OrderedDict(sorted(date_dict.items()))
+        return Response(ordered_date_dict)
+
+    def realization_one(self, agreems):
         # default dict with default values is [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         date_dict = defaultdict(lambda: [0 for _ in range(12)])
-
-        agreements = self.filter_queryset(self.get_queryset())
-        agreements = agreements.annotate(
-            stop=Max('periods__stop_date')
-        ).annotate(
-            year=ExtractYear('stop'),
-            month=ExtractMonth('stop'),
+        agreements = agreems.annotate(
+            year=ExtractYear(Max('periods__stop_date')),
+            month=ExtractMonth(Max('periods__stop_date')),
         ).values('year', 'month')
         for agreement in agreements:
             date_dict[agreement['year']][agreement['month'] - 1] += 1
-        ordered_date_dict = OrderedDict(sorted(date_dict.items()))
+        return date_dict
 
-        return Response(ordered_date_dict)
+    def realization_two(self, agreems):
+        date_dict = {}
+        agreements = agreems.annotate(
+            year=ExtractYear(Max('periods__stop_date')),
+            month=ExtractMonth(Max('periods__stop_date')),
+        ).values(
+            'year',
+            'month'
+        ).annotate(
+            count=Count('month')
+        ).values(
+            'year',
+            'month',
+            'count'
+        )
+        print(agreements)
+        for agreement in agreements:
+            date_dict[agreement['year']][agreement['month'] - 1] = agreement['count']
+        return date_dict
+
+###--------------------------------------------------- SQL ---------------------------------------------------###
+# SELECT alias.year as year, alias.month as month, count(*) as count
+# FROM (SELECT EXTRACT('month' FROM MAX(ap.stop_date)) as month, EXTRACT('year' FROM MAX(ap.stop_date)) as year
+#       FROM agreement_agreement aa left join agreement_period ap on aa.id = ap.agreement_id
+#       GROUP BY aa.id) as alias
+# GROUP BY alias.year, alias.month;
+#################################################################################################################

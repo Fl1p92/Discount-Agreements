@@ -51,3 +51,18 @@ Arrays - index means month number, digit - number of closing agreements.
 Endpoint support following filters: country, negotiator, company.
 For example: ?country=1,2,7&negotitator=4,8
 Number is an id of an object.
+
+---
+
+##### In this project was used:
+* Unit tests
+* djangorestframework - `a powerful and flexible toolkit for building Web APIs.`
+* django-environ - `allows you to use Twelve-factor methodology to configure your Django application with environment variables.`
+* django-debug-toolbar - `a configurable set of panels that display various debug information about the current request/response.`
+* django-filter - `a generic system for filtering Django QuerySets based on user selections.`
+* django-widget-tweaks - `tweak the form field rendering in templates, not in python-level form definitions.`
+* ipython - `is a command shell for interactive computing, that offers introspection, rich media, shell syntax, tab completion, and history. `
+* pip-tools - `a set of command line tools to help you keep your pip-based packages fresh.`
+* psycopg2 - `python-PostgreSQL Database Adapter.`
+* celery - `is an open source asynchronous task queue or job queue which is based on distributed message passing.`
+* redis - `is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker.`

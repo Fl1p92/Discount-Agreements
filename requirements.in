@@ -1,6 +1,5 @@
 celery[redis]
 django<3.0
-django-anymail[mailgun]
 django-environ
 django-debug-toolbar
 django-filter
